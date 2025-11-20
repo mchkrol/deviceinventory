@@ -10,11 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.michalkrol.deviceinventory.model.Device;
 import com.michalkrol.deviceinventory.model.DeviceType;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceSortingUtilTest {
+@SpringBootTest
+public class DeviceSortingUtilsTest {
 
     private Device createDevice(DeviceType type, String mac) {
         Device device = new Device();
@@ -31,7 +33,7 @@ public class DeviceSortingUtilTest {
                 createDevice(SWITCH, "AA:00:00:00:00:02")
         ));
 
-        DeviceSortingUtil.sortDevices(devices);
+        DeviceSortingUtils.sortDevices(devices);
 
         assertEquals(GATEWAY, devices.get(0).getDeviceType());
         assertEquals(SWITCH, devices.get(1).getDeviceType());
@@ -46,7 +48,7 @@ public class DeviceSortingUtilTest {
                 createDevice(SWITCH, "AA:00:00:00:00:03")
         ));
 
-        DeviceSortingUtil.sortDevices(devices);
+        DeviceSortingUtils.sortDevices(devices);
 
         assertEquals("AA:00:00:00:00:01", devices.get(0).getMacAddress());
         assertEquals("AA:00:00:00:00:03", devices.get(1).getMacAddress());
@@ -62,7 +64,7 @@ public class DeviceSortingUtilTest {
                 createDevice(ACCESS_POINT, "AA:00:00:00:00:04")
         ));
 
-        DeviceSortingUtil.sortDevices(devices);
+        DeviceSortingUtils.sortDevices(devices);
 
         assertEquals(GATEWAY, devices.get(0).getDeviceType());
         assertEquals(SWITCH, devices.get(1).getDeviceType());
@@ -79,7 +81,7 @@ public class DeviceSortingUtilTest {
     void shouldHandleEmptyList() {
         List<Device> devices = new ArrayList<>();
 
-        assertDoesNotThrow(() -> DeviceSortingUtil.sortDevices(devices));
+        assertDoesNotThrow(() -> DeviceSortingUtils.sortDevices(devices));
 
         assertTrue(devices.isEmpty());
     }
@@ -92,7 +94,7 @@ public class DeviceSortingUtilTest {
                 createDevice(ACCESS_POINT, "AA:00:00:00:00:03")
         ));
 
-        assertDoesNotThrow(() -> DeviceSortingUtil.sortDevices(devices));
+        assertDoesNotThrow(() -> DeviceSortingUtils.sortDevices(devices));
 
         assertEquals(GATEWAY, devices.get(0).getDeviceType());
         assertEquals(SWITCH, devices.get(1).getDeviceType());

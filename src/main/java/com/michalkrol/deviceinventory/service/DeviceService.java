@@ -4,8 +4,8 @@ import com.michalkrol.deviceinventory.exception.DeviceInventoryException;
 import com.michalkrol.deviceinventory.model.Device;
 import com.michalkrol.deviceinventory.model.DeviceNode;
 import com.michalkrol.deviceinventory.repository.DeviceRepository;
-import com.michalkrol.deviceinventory.utils.DeviceSortingUtil;
-import com.michalkrol.deviceinventory.utils.TopologyUtil;
+import com.michalkrol.deviceinventory.utils.DeviceSortingUtils;
+import com.michalkrol.deviceinventory.utils.TopologyUtils;
 import com.michalkrol.deviceinventory.validation.MacAddressValidator;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +27,9 @@ public class DeviceService {
         }
         MacAddressValidator.validateMacAddress(device.getMacAddress());
         MacAddressValidator.validateMacAddress(device.getUplinkMacAddress());
-        TopologyUtil.checkUplinkMacAddressExistence(device, devices);
-        TopologyUtil.checkMacAddressUniqueness(device, devices);
-        TopologyUtil.checkUplinkConnection(device, devices);
+        TopologyUtils.checkUplinkMacAddressExistence(device, devices);
+        TopologyUtils.checkMacAddressUniqueness(device, devices);
+        TopologyUtils.checkUplinkConnection(device, devices);
         return deviceRepository.save(device);
     }
 
@@ -42,23 +42,23 @@ public class DeviceService {
 
     public List<Device> findAllSorted() {
         List<Device> devices = deviceRepository.findAll();
-        DeviceSortingUtil.sortDevices(devices);
+        DeviceSortingUtils.sortDevices(devices);
         return devices;
     }
 
     public List<DeviceNode> getTopology() {
         List<Device> devices = deviceRepository.findAll();
-        TopologyUtil.validateNoCycles(devices);
-        return TopologyUtil.prepareDeviceTopology(devices);
+        TopologyUtils.validateNoCycles(devices);
+        return TopologyUtils.prepareDeviceTopology(devices);
     }
 
     public DeviceNode getSubDeviceTopology(String rootDeviceMacAddress) {
         MacAddressValidator.validateMacAddress(rootDeviceMacAddress);
         List<Device> devices = deviceRepository.findAll();
-        TopologyUtil.validateNoCycles(devices);
+        TopologyUtils.validateNoCycles(devices);
         deviceRepository.findByMacAddress(rootDeviceMacAddress)
                 .orElseThrow(() -> new DeviceInventoryException("A Device with MAC Address " + rootDeviceMacAddress
                         + " not found."));
-        return TopologyUtil.prepareSubDeviceTopology(rootDeviceMacAddress, devices);
+        return TopologyUtils.prepareSubDeviceTopology(rootDeviceMacAddress, devices);
     }
 }

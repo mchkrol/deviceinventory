@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class DeviceSortingUtil {
+public class DeviceSortingUtils {
 
     private static final Map<DeviceType, Integer> DEVICE_TYPE_PRIORITY = Map.of(
             GATEWAY, 1,

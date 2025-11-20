@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-class TopologyUtilTest {
+class TopologyUtilsTest {
 
     private Device createDevice(DeviceType deviceType, String macAddress, String uplinkMacAddress) {
         Device device = new Device();
@@ -46,7 +46,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of(device1, device2, device3, device4);
 
         // when
-        DeviceNode root = TopologyUtil.prepareSubDeviceTopology("AA:BB:CC:DD:EE:01", devices);
+        DeviceNode root = TopologyUtils.prepareSubDeviceTopology("AA:BB:CC:DD:EE:01", devices);
 
         // then
         assertThat(root.getMacAddress()).isEqualTo("AA:BB:CC:DD:EE:01");
@@ -74,7 +74,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of(device1, device2);
 
         // when
-        DeviceNode root = TopologyUtil.prepareSubDeviceTopology("AA:BB:CC:DD:EE:02", devices);
+        DeviceNode root = TopologyUtils.prepareSubDeviceTopology("AA:BB:CC:DD:EE:02", devices);
 
         // then
         assertThat(root.getMacAddress()).isEqualTo("AA:BB:CC:DD:EE:02");
@@ -93,7 +93,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of(device1, device2, device3, device4, device5);
 
         // when
-        List<DeviceNode> roots = TopologyUtil.prepareDeviceTopology(devices);
+        List<DeviceNode> roots = TopologyUtils.prepareDeviceTopology(devices);
 
         // then
         assertThat(roots).hasSize(2);
@@ -128,7 +128,7 @@ class TopologyUtilTest {
         );
 
         // when
-        List<DeviceNode> roots = TopologyUtil.prepareDeviceTopology(devices);
+        List<DeviceNode> roots = TopologyUtils.prepareDeviceTopology(devices);
 
         // then
         assertThat(roots).hasSize(3);
@@ -143,7 +143,7 @@ class TopologyUtilTest {
     @Test
     void prepareSubDeviceTopology_shouldReturnNullIfListEmpty() {
         // when
-        DeviceNode root = TopologyUtil.prepareSubDeviceTopology("AA:BB:CC:DD:EE:01", List.of());
+        DeviceNode root = TopologyUtils.prepareSubDeviceTopology("AA:BB:CC:DD:EE:01", List.of());
 
         // then
         assertThat(root).isNull();
@@ -152,7 +152,7 @@ class TopologyUtilTest {
     @Test
     void prepareDeviceTopology_shouldReturnEmptyListIfInputEmpty() {
         // when
-        List<DeviceNode> roots = TopologyUtil.prepareDeviceTopology(List.of());
+        List<DeviceNode> roots = TopologyUtils.prepareDeviceTopology(List.of());
 
         // then
         assertThat(roots).isEmpty();
@@ -166,7 +166,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of(device);
 
         // when
-        DeviceNode root = TopologyUtil.prepareSubDeviceTopology("AA:BB:CC:DD:EE:99", devices);
+        DeviceNode root = TopologyUtils.prepareSubDeviceTopology("AA:BB:CC:DD:EE:99", devices);
 
         // then
         assertThat(root).isNull();
@@ -177,7 +177,7 @@ class TopologyUtilTest {
         Device root = createDevice(GATEWAY, "AA:BB:CC:DD:EE:01", null);
         Device newDevice = createDevice(SWITCH, "AA:BB:CC:DD:EE:02", "AA:BB:CC:DD:EE:01");
 
-        assertDoesNotThrow(() -> TopologyUtil.checkUplinkMacAddressExistence(newDevice, List.of(root)));
+        assertDoesNotThrow(() -> TopologyUtils.checkUplinkMacAddressExistence(newDevice, List.of(root)));
     }
 
     @Test
@@ -185,7 +185,7 @@ class TopologyUtilTest {
         Device newDevice = createDevice(SWITCH, "AA:BB:CC:DD:EE:02", "AA:BB:CC:DD:EE:03");
 
         DeviceInventoryException ex = assertThrows(DeviceInventoryException.class, () ->
-                TopologyUtil.checkUplinkMacAddressExistence(newDevice, List.of())
+                TopologyUtils.checkUplinkMacAddressExistence(newDevice, List.of())
         );
 
         assertEquals("A Device with MAC address AA:BB:CC:DD:EE:03 does not exist.", ex.getMessage());
@@ -196,7 +196,7 @@ class TopologyUtilTest {
         Device existing = createDevice(GATEWAY, "AA:BB:CC:DD:EE:01", null);
         Device newDevice = createDevice(SWITCH, "AA:BB:CC:DD:EE:02", "AA:BB:CC:DD:EE:01");
 
-        assertDoesNotThrow(() -> TopologyUtil.checkMacAddressUniqueness(newDevice, List.of(existing)));
+        assertDoesNotThrow(() -> TopologyUtils.checkMacAddressUniqueness(newDevice, List.of(existing)));
     }
 
     @Test
@@ -205,7 +205,7 @@ class TopologyUtilTest {
         Device newDevice = createDevice(SWITCH, "AA:BB:CC:DD:EE:01", "AA:BB:CC:DD:EE:02");
 
         DeviceInventoryException ex = assertThrows(DeviceInventoryException.class, () ->
-                TopologyUtil.checkMacAddressUniqueness(newDevice, List.of(existing))
+                TopologyUtils.checkMacAddressUniqueness(newDevice, List.of(existing))
         );
 
         assertEquals("A Device with MAC address AA:BB:CC:DD:EE:01 already exists.", ex.getMessage());
@@ -219,7 +219,7 @@ class TopologyUtilTest {
                 createDevice("AA:BB:CC:00:00:03", null)   // brak cyklu
         );
 
-        assertDoesNotThrow(() -> TopologyUtil.validateNoCycles(devices));
+        assertDoesNotThrow(() -> TopologyUtils.validateNoCycles(devices));
     }
 
     @Test
@@ -231,7 +231,7 @@ class TopologyUtilTest {
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> TopologyUtil.validateNoCycles(devices)
+                () -> TopologyUtils.validateNoCycles(devices)
         );
 
         assertTrue(ex.getMessage().contains("AA:BB:CC:00:00:01"));
@@ -248,7 +248,7 @@ class TopologyUtilTest {
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> TopologyUtil.validateNoCycles(devices)
+                () -> TopologyUtils.validateNoCycles(devices)
         );
 
         assertTrue(ex.getMessage().contains("AA:BB:CC:00:00:01"));
@@ -265,7 +265,7 @@ class TopologyUtilTest {
                 createDevice("AA:BB:CC:00:00:04", "AA:BB:CC:00:00:02")
         );
 
-        assertDoesNotThrow(() -> TopologyUtil.validateNoCycles(devices));
+        assertDoesNotThrow(() -> TopologyUtils.validateNoCycles(devices));
     }
 
     @Test
@@ -275,7 +275,7 @@ class TopologyUtilTest {
                 createDevice("AA:BB:CC:00:00:02", "AA:BB:CC:00:00:01")
         );
 
-        assertDoesNotThrow(() -> TopologyUtil.validateNoCycles(devices));
+        assertDoesNotThrow(() -> TopologyUtils.validateNoCycles(devices));
     }
 
     @Test
@@ -286,7 +286,7 @@ class TopologyUtilTest {
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> TopologyUtil.validateNoCycles(devices)
+                () -> TopologyUtils.validateNoCycles(devices)
         );
 
         assertTrue(ex.getMessage().contains("AA:BB:CC:00:00:01"));
@@ -297,7 +297,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of();
 
         assertDoesNotThrow(() ->
-                TopologyUtil.validateNoCycles(devices)
+                TopologyUtils.validateNoCycles(devices)
         );
     }
 
@@ -311,7 +311,7 @@ class TopologyUtilTest {
 
         // when & then
         DeviceInventoryException exception = assertThrows(DeviceInventoryException.class, () ->
-                TopologyUtil.checkUplinkConnection(device, devices));
+                TopologyUtils.checkUplinkConnection(device, devices));
 
         assertEquals("An Access Point is supposed to connect wireless Devices.", exception.getMessage());
     }
@@ -325,7 +325,7 @@ class TopologyUtilTest {
         List<Device> devices = List.of(switchDevice);
 
         // when & then
-        assertDoesNotThrow(() -> TopologyUtil.checkUplinkConnection(device, devices));
+        assertDoesNotThrow(() -> TopologyUtils.checkUplinkConnection(device, devices));
     }
 
     @Test
@@ -337,6 +337,6 @@ class TopologyUtilTest {
         List<Device> devices = List.of(accessPoint);
 
         // when & then
-        assertDoesNotThrow(() -> TopologyUtil.checkUplinkConnection(device, devices));
+        assertDoesNotThrow(() -> TopologyUtils.checkUplinkConnection(device, devices));
     }
 }

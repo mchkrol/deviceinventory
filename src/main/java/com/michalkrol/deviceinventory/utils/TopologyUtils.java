@@ -16,11 +16,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TopologyUtil {
+public class TopologyUtils {
 
     public static void validateNoCycles(List<Device> devices) {
 
-        // Mapowanie macAddress → Device
         Map<String, Device> devicesMap = devices.stream()
                 .collect(Collectors.toMap(Device::getMacAddress, device -> device));
 
@@ -73,7 +72,6 @@ public class TopologyUtil {
     }
 
     public static DeviceNode prepareSubDeviceTopology(String rootDeviceMacAddress, List<Device> devices) {
-        // 1. Utwórz mapę: macAddress -> DeviceNode
         Map<String, DeviceNode> deviceNodesMap = devices.stream()
                 .collect(Collectors.toMap(Device::getMacAddress, device -> new DeviceNode(device.getMacAddress())));
 
@@ -81,7 +79,7 @@ public class TopologyUtil {
             String mac = device.getMacAddress();
             String parentMac = device.getUplinkMacAddress();
             if (parentMac == null || parentMac.isEmpty()) {
-                // możliwy korzeń bez podanego uplinka
+                // a possible root
                 return;
             }
             DeviceNode parent = deviceNodesMap.get(parentMac);
@@ -91,7 +89,6 @@ public class TopologyUtil {
             }
         });
 
-        // 3. Jeśli korzeń nie został ustalony naturalnie — weź go z mapy
         return deviceNodesMap.getOrDefault(rootDeviceMacAddress, null);
     }
 
