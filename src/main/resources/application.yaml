@@ -1,0 +1,30 @@
+devices:
+  initial:
+    - deviceType: GATEWAY
+      macAddress: "AA:BB:CC:DD:EE:01"
+
+    - deviceType: SWITCH
+      macAddress: "AA:BB:CC:DD:EE:02"
+      uplinkMacAddress: "AA:BB:CC:DD:EE:01"
+
+    - deviceType: SWITCH
+      macAddress: "AA:BB:CC:DD:EE:03"
+      uplinkMacAddress: "AA:BB:CC:DD:EE:02"
+
+    - deviceType: SWITCH
+      macAddress: "AA:BB:CC:DD:EE:04"
+      uplinkMacAddress: "AA:BB:CC:DD:EE:03"
+
+    - deviceType: SWITCH
+      macAddress: "AA:BB:CC:DD:EE:05"
+      uplinkMacAddress: "AA:BB:CC:DD:EE:03"
+
+    - deviceType: GATEWAY
+      macAddress: "AA:BB:CC:DD:FF:01"
+
+    - deviceType: SWITCH
+      macAddress: "AA:BB:CC:DD:FF:02"
+      uplinkMacAddress: "AA:BB:CC:DD:FF:01"
+
+    - deviceType: GATEWAY
+      macAddress: "AA:BB:CC:DD:FF:03"
