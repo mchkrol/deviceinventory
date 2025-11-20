@@ -20,8 +20,6 @@ public class DeviceService {
         this.deviceRepository = deviceRepository;
     }
 
-//    TODO: poprawność topologii?
-//    TODO: wykrywanie cykli? walidacja adresów MAC? walidacja czy uplink MAC istnieje, walidacja zduplikowanego MACa, sprawdzenie czy adresy są różne
     public Device save(Device device) {
         List<Device> devices = deviceRepository.findAll();
         if (device.getMacAddress().equals(device.getUplinkMacAddress())) {
