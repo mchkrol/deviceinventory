@@ -28,3 +28,6 @@ devices:
 
     - deviceType: GATEWAY
       macAddress: "AA:BB:CC:DD:FF:03"
+
+    - deviceType: ACCESS_POINT
+      macAddress: "AA:BB:CC:DD:FF:04"

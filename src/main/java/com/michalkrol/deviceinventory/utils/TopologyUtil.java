@@ -3,6 +3,7 @@ package com.michalkrol.deviceinventory.utils;
 import com.michalkrol.deviceinventory.exception.DeviceInventoryException;
 import com.michalkrol.deviceinventory.model.Device;
 import com.michalkrol.deviceinventory.model.DeviceNode;
+import com.michalkrol.deviceinventory.model.DeviceType;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -147,6 +148,15 @@ public class TopologyUtil {
                 .anyMatch(macAddress -> macAddress.equals(device.getMacAddress()))) {
             throw new DeviceInventoryException("A Device with MAC address " + device.getMacAddress()
                     + " already exists.");
+        }
+    }
+
+    public static void checkUplinkConnection(Device device, List<Device> devices) {
+        if (devices.stream()
+                .anyMatch(deviceFromTopology ->
+                        device.getUplinkMacAddress().equals(deviceFromTopology.getMacAddress())
+                                && DeviceType.ACCESS_POINT.equals(deviceFromTopology.getDeviceType()))) {
+            throw new DeviceInventoryException("An Access Point is supposed to connect wireless Devices.");
         }
     }
 

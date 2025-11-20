@@ -29,6 +29,7 @@ public class DeviceService {
         MacAddressValidator.validateMacAddress(device.getUplinkMacAddress());
         TopologyUtil.checkUplinkMacAddressExistence(device, devices);
         TopologyUtil.checkMacAddressUniqueness(device, devices);
+        TopologyUtil.checkUplinkConnection(device, devices);
         return deviceRepository.save(device);
     }
 

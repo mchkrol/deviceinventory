@@ -300,4 +300,43 @@ class TopologyUtilTest {
                 TopologyUtil.validateNoCycles(devices)
         );
     }
+
+    @Test
+    void checkUplinkConnection_ThrowsException_WhenUplinkIsAccessPoint() {
+        // given
+        Device accessPoint = createDevice(DeviceType.ACCESS_POINT, "AA:BB:CC:DD:EE:01", null);
+        Device device = createDevice(DeviceType.SWITCH, "AA:BB:CC:DD:EE:02", "AA:BB:CC:DD:EE:01");
+
+        List<Device> devices = List.of(accessPoint);
+
+        // when & then
+        DeviceInventoryException exception = assertThrows(DeviceInventoryException.class, () ->
+                TopologyUtil.checkUplinkConnection(device, devices));
+
+        assertEquals("An Access Point is supposed to connect wireless Devices.", exception.getMessage());
+    }
+
+    @Test
+    void checkUplinkConnection_DoesNotThrow_WhenUplinkIsNotAccessPoint() {
+        // given
+        Device switchDevice = createDevice(DeviceType.SWITCH, "AA:BB:CC:DD:EE:03", null);
+        Device device = createDevice(DeviceType.SWITCH, "AA:BB:CC:DD:EE:04", "AA:BB:CC:DD:EE:03");
+
+        List<Device> devices = List.of(switchDevice);
+
+        // when & then
+        assertDoesNotThrow(() -> TopologyUtil.checkUplinkConnection(device, devices));
+    }
+
+    @Test
+    void checkUplinkConnection_DoesNotThrow_WhenNoMatchingUplink() {
+        // given
+        Device accessPoint = createDevice(DeviceType.ACCESS_POINT, "AA:BB:CC:DD:EE:05", null);
+        Device device = createDevice(DeviceType.SWITCH, "AA:BB:CC:DD:EE:06", "AA:BB:CC:DD:EE:FF");
+
+        List<Device> devices = List.of(accessPoint);
+
+        // when & then
+        assertDoesNotThrow(() -> TopologyUtil.checkUplinkConnection(device, devices));
+    }
 }
