@@ -36,7 +36,7 @@ public class DeviceController {
         return toDeviceEntry(device);
     }
 
-    @GetMapping
+    @GetMapping("/getAllDevicesSorted")
     public List<DeviceEntry> getSortedDevices() {
         return deviceService.findAllSorted().stream()
                 .map(DeviceController::toDeviceEntry)
