@@ -63,9 +63,9 @@ public class TopologyUtils {
 
     private static String buildCycleDescription(Deque<String> stack, String start) {
         List<String> cycle = new ArrayList<>();
-        for (String s : stack) {
-            cycle.add(s);
-            if (s.equals(start)) break;
+        for (String string : stack) {
+            cycle.add(string);
+            if (string.equals(start)) break;
         }
         Collections.reverse(cycle);
         return cycle.toString();
