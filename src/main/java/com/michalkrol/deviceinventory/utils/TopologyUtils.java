@@ -30,10 +30,10 @@ public class TopologyUtils {
 
         devices.stream()
                 .map(Device::getMacAddress)
-                .forEach(macAddress -> dfs(macAddress, devicesMap, deviceStates, pathStack));
+                .forEach(macAddress -> depthFirstSearch(macAddress, devicesMap, deviceStates, pathStack));
     }
 
-    private static void dfs(
+    private static void depthFirstSearch(
             String currentMacAddress,
             Map<String, Device> devicesMap,
             Map<String, State> deviceStates,
@@ -49,7 +49,7 @@ public class TopologyUtils {
 
             if (devicesMap.containsKey(uplinkMacAddress)) {
                 if (deviceStates.get(uplinkMacAddress) == State.UNVISITED) {
-                    dfs(uplinkMacAddress, devicesMap, deviceStates, stack);
+                    depthFirstSearch(uplinkMacAddress, devicesMap, deviceStates, stack);
                 } else if (deviceStates.get(uplinkMacAddress) == State.VISITING) {
                     throw new IllegalStateException("A cycle has been detected in the topology: "
                             + buildCycleDescription(stack, uplinkMacAddress));
@@ -110,13 +110,6 @@ public class TopologyUtils {
         return prepareRoots(deviceNodesMap, hasUplinkDevice);
     }
 
-    private static List<DeviceNode> prepareRoots(Map<String, DeviceNode> deviceNodesMap, Set<String> hasUplinkDevice) {
-        return deviceNodesMap.entrySet().stream()
-                .filter(entry -> !hasUplinkDevice.contains(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
-
     private static Map<String, DeviceNode> prepareDeviceNodesMap(List<Device> devices) {
         Map<String, DeviceNode> deviceNodesMap = new HashMap<>();
         devices.forEach(device -> {
@@ -128,6 +121,13 @@ public class TopologyUtils {
             }
         });
         return deviceNodesMap;
+    }
+
+    private static List<DeviceNode> prepareRoots(Map<String, DeviceNode> deviceNodesMap, Set<String> hasUplinkDevice) {
+        return deviceNodesMap.entrySet().stream()
+                .filter(entry -> !hasUplinkDevice.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     public static void checkUplinkMacAddressExistence(Device device, List<Device> devices) {
