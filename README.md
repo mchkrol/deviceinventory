@@ -20,7 +20,7 @@ A Spring Boot application with a device inventory and network deployment operati
 - The REST API allows to register devices to network deployment and retrieve device data and network structure
 - There are three types of devices: Gateway, Switch and Access Point
 - If a device is attached to another device in the same network, it is represented via uplink reference
-- The entire set of devices may form a tree structure or a forrest (collection of trees) if there is more than one root network device.
+- The entire set of devices may form a tree structure or a forrest (collection of trees) if there is more than one root network device
 
 ## How to run (Windows)
 1. Clone the repository:<br>
